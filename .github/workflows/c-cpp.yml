@@ -16,8 +16,8 @@ jobs:
     
     - name: install deps
       run: |
-        sudo apt install gcc make gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu autoconf \
-        zlib1g zlib1g-dev lib32z1 lib32z1-dev -y
+        sudo apt install gcc make gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu autoconf -y
+        sudo apt install zlib1g zlib1g-dev lib32z1 lib32z1-dev -y
         
     - name: configure
       run: |
