@@ -22,6 +22,7 @@ jobs:
     
     - name: install zlib-arm & openssl-arm
       run: |
+        #zlib
         export PATH_HOME=`pwd`
         echo "=============================="
         echo "work directory is: $PATH_HOME"
@@ -53,6 +54,7 @@ jobs:
         make
         make install
         
+        #openssl
         echo "=============================="
         echo "going back to work dir"
         echo "=============================="
@@ -72,7 +74,7 @@ jobs:
         echo "=============================="
         echo "running configure"
         echo "=============================="
-        ./Configure linux-aarch64 shared zlib-dynamic --prefix=$PATH_HOME/openssl-arm
+        ./Configure linux-aarch64 shared zlib-dynamic --prefix=/usr
         
         echo "=============================="
         echo "running make
@@ -82,7 +84,7 @@ jobs:
         echo "=============================="
         echo "running make install
         echo "=============================="
-        make CC="${cross}gcc" AR="${cross}ar r" RANLIB="${cross}ranlib" install
+        make CC="${cross}gcc" AR="${cross}ar r" RANLIB="${cross}ranlib" INSTALL_PREFIX=$PATH_HOME/openssl-arm install
         
     - name: configure openssh
       run: |
