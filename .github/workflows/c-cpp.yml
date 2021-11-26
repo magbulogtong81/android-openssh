@@ -23,37 +23,69 @@ jobs:
     - name: install zlib-arm & openssl-arm
       run: |
         export PATH_HOME=`pwd`
+        echo "=============================="
         echo "work directory is: $PATH_HOME"
+        echo "=============================="
         echo "downloading zlib..."
+        echo "=============================="
         wget https://zlib.net/zlib-1.2.11.tar.gz
+        echo "=============================="
         echo "creating directories..."
+        echo "=============================="
         mkdir zlib-source -p
         mkdir zlib-arm -p
+        echo "=============================="
         echo "extracting zlib"
+        echo "=============================="
         tar -xvf zlib-1.2.11.tar.gz -C zlib-source
+        echo "=============================="
         echo "going to directory $PATH_HOME/zlib-source/zlib-1.2.11"
+        echo "=============================="
         cd zlib-source/zlib-1.2.11
         CC=aarch64-linux-gnu-gcc
+        echo "=============================="
         echo "running configure"
+        echo "=============================="
         ./configure --prefix=$PATH_HOME/zlib-arm
+        echo "=============================="
         echo "running make & make install"
+        echo "=============================="
         make
         make install
         
+        echo "=============================="
         echo "going back to work dir"
+        echo "=============================="
         cd $PATH_HOME
         mkdir openssl-arm
+        echo "=============================="
         echo "downloading openssl"
-        git clone git clone https://github.com/openssl/openssl.git
+        echo "=============================="
+        git clone https://github.com/openssl/openssl.git
+        
+        echo "=============================="
+        echo " going to dir $PATH_HOME/openssl"
+        echo "=============================="
         cd openssl
         export cross=aarch64-linux-gnu-
+        
+        echo "=============================="
+        echo "running configure"
+        echo "=============================="
         ./Configure dist --prefix=$PATH_HOME/openssl-arm
+        
+        echo "=============================="
+        echo "running make & make install"
+        echo "=============================="
         make CC="${cross}gcc" AR="${cross}ar r" RANLIB="${cross}ranlib"
         make install
         
     - name: configure openssh
       run: |
             cd $PATH_HOME
+            echo "=============================="
+            echo "work dir is: $PATH_HOME"
+            echo "=============================="
             mkdir build -p
             autoreconf
             ./configure --build x86_64-pc-linux-gnu --host aarch64-linux-gnu CFLAGS="-static" \
