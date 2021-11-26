@@ -31,7 +31,8 @@ jobs:
             artifact_name: git-ubuntu20.04_aarch64
     
         install: |
-          sudo apt install gcc tar make gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu autoconf git -y
+          apt-get update -q -y
+          apt-get install gcc tar make gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu autoconf git -q -y
         
         run: |
           #zlib
