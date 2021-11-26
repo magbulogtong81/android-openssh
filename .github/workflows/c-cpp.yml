@@ -18,112 +18,107 @@ jobs:
       with:
         arch: aarch64
         distro: ubuntu20.04
+        
+        githubToken: ${{ github.token }}
+        
+        setup: |
+            mkdir -p "${PWD}"
+            
+        dockerRunArgs: |
+            --volume "${PWD}/workdir"
+            
+        env: | # YAML, but pipe character is necessary
+            artifact_name: git-ubuntu20.04_aarch64
     
-    - name: check arch
-      run: uname -a
-    
-    - name: install deps
-      run: |
-        sudo apt install gcc make gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu autoconf -y
+        install: |
+          sudo apt install gcc tar make gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu autoconf git -y
         
-    
-    - name: install zlib-arm & openssl-arm
-      run: |
-        #zlib
-        export PATH_HOME=`pwd`
-        echo "=============================="
-        echo "work directory is: $PATH_HOME"
-        echo "=============================="
-        echo "downloading zlib..."
-        echo "=============================="
-        wget https://zlib.net/zlib-1.2.11.tar.gz
-        echo "=============================="
-        echo "creating directories..."
-        echo "=============================="
-        mkdir zlib-source -p
-        mkdir zlib-arm -p
-        echo "=============================="
-        echo "extracting zlib"
-        echo "=============================="
-        tar -xvf zlib-1.2.11.tar.gz -C zlib-source
-        echo "=============================="
-        echo "going to directory $PATH_HOME/zlib-source/zlib-1.2.11"
-        echo "=============================="
-        cd zlib-source/zlib-1.2.11
-        CC=aarch64-linux-gnu-gcc
-        echo "=============================="
-        echo "running configure"
-        echo "=============================="
-        ./configure --prefix=$PATH_HOME/zlib-arm
-        echo "=============================="
-        echo "running make & make install"
-        echo "=============================="
-        make
-        make install
+        run: |
+          #zlib
+          export PATH_HOME=/workdir
+          echo "=============================="
+          echo "work directory is: $PATH_HOME"
+          echo "=============================="
+          echo "downloading zlib..."
+          echo "=============================="
+          wget https://zlib.net/zlib-1.2.11.tar.gz
+          echo "=============================="
+          echo "creating directories..."
+          echo "=============================="
+          mkdir zlib-source -p
+          mkdir zlib-arm -p
+          echo "=============================="
+          echo "extracting zlib"
+          echo "=============================="
+          tar -xvf zlib-1.2.11.tar.gz -C zlib-source
+          echo "=============================="
+          echo "going to directory $PATH_HOME/zlib-source/zlib-1.2.11"
+          echo "=============================="
+          cd zlib-source/zlib-1.2.11
+          CC=aarch64-linux-gnu-gcc
+          echo "=============================="
+          echo "running configure"
+          echo "=============================="
+          ./configure --prefix=$PATH_HOME/zlib-arm
+          echo "=============================="
+          echo "running make & make install"
+          echo "=============================="
+          make
+          make install
         
-        #openssl
-        echo "=============================="
-        echo "going back to work dir"
-        echo "=============================="
-        cd $PATH_HOME
-        mkdir openssl-arm
-        echo "=============================="
-        echo "downloading openssl"
-        echo "=============================="
-        git clone https://github.com/openssl/openssl.git
-        
-        echo "=============================="
-        echo " going to dir $PATH_HOME/openssl"
-        echo "=============================="
-        cd openssl
-        export cross=aarch64-linux-gnu-
-        
-        echo "=============================="
-        echo "running configure"
-        echo "=============================="
-        ./Configure linux-aarch64 --prefix=$PATH_HOME/openssl-arm
-        
-        echo "=============================="
-        echo "running make
-        echo "=============================="
-        make CC="${cross}gcc" AR="${cross}ar r" RANLIB="${cross}ranlib"
-        
-        echo "=============================="
-        echo "running make install
-        echo "=============================="
-        make CC="${cross}gcc" AR="${cross}ar r" RANLIB="${cross}ranlib" install
-    
-    
-        
-    - name: configure openssh
-      run: |
-            cd $PATH_HOME
-            echo "=============================="
+          #openssl
+          echo "=============================="
+          echo "going back to work dir"
+          echo "=============================="
+          cd $PATH_HOME
+          mkdir openssl-arm
+          echo "=============================="
+          echo "downloading openssl"
+          echo "=============================="
+          git clone https://github.com/openssl/openssl.git
+
+          echo "=============================="
+          echo " going to dir $PATH_HOME/openssl"
+          echo "=============================="
+          cd openssl
+          export cross=aarch64-linux-gnu-
+
+          echo "=============================="
+          echo "running configure"
+          echo "=============================="
+          ./Configure linux-aarch64 --prefix=$PATH_HOME/openssl-arm
+
+          echo "=============================="
+          echo "running make
+          echo "=============================="
+          make CC="${cross}gcc" AR="${cross}ar r" RANLIB="${cross}ranlib"
+
+          echo "=============================="
+          echo "running make install
+          echo "=============================="
+          make CC="${cross}gcc" AR="${cross}ar r" RANLIB="${cross}ranlib" install
+
+          cd $PATH_HOME
+          mkdir build
+          echo "=============================="
             echo "work dir is: $PATH_HOME"
-            echo "=============================="
-            mkdir build -p
-            autoreconf
-            ./configure CFLAGS="-static" \
-            --enable-mpers=check --prefix=`pwd`/build --with-libs --with-zlib=$PATH_HOME/zlib-arm \
-            --with-ssl-dir=$PATH_HOME/openssl-arm --disable-etc-default-login CC=aarch64-linux-gnu-gcc \
-            AR=aarch64-linux-gnu-ar
+          echo "=============================="
+          autoreconf
+          ./configure CFLAGS="-static" \
+          --enable-mpers=check --prefix=`pwd`/build --with-libs --with-zlib=$PATH_HOME/zlib-arm \
+          --with-ssl-dir=$PATH_HOME/openssl-arm --disable-etc-default-login CC=aarch64-linux-gnu-gcc \
+          AR=aarch64-linux-gnu-ar
+          
+          make LDFLAGS="-all-static"
+          make install
 
       
-      
-    - name: make
-      run: make LDFLAGS="-all-static"
-      
-    - name: make check
-      run: make check
-      
-    - name: make distcheck
-      run: make distcheck
-      
-    - name: install
-      run: sudo make install
+    - name: Show the artifact
+      run: |
+          ls -al "${PWD}/workdir/build"
       
     - name: upload artifact
       uses: actions/upload-artifact@v2
       with:
           name: openssh-android
-          path: build/*
+          path: workdir/build/*
