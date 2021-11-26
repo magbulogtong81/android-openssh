@@ -13,6 +13,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - uses: uraimo/run-on-arch-action@v2.0.5
+      id: runcmd
+      with:
+        arch: aarch64
+        distro: ubuntu20.04
+    
+    - name: check arch
+      run: uname -a
     
     - name: install deps
       run: |
@@ -84,6 +92,8 @@ jobs:
         echo "running make install
         echo "=============================="
         make CC="${cross}gcc" AR="${cross}ar r" RANLIB="${cross}ranlib" install
+    
+    
         
     - name: configure openssh
       run: |
@@ -93,7 +103,7 @@ jobs:
             echo "=============================="
             mkdir build -p
             autoreconf
-            ./configure --build x86_64-pc-linux-gnu --host aarch64-linux-gnu CFLAGS="-static" \
+            ./configure CFLAGS="-static" \
             --enable-mpers=check --prefix=`pwd`/build --with-libs --with-zlib=$PATH_HOME/zlib-arm \
             --with-ssl-dir=$PATH_HOME/openssl-arm --disable-etc-default-login CC=aarch64-linux-gnu-gcc \
             AR=aarch64-linux-gnu-ar
