@@ -382,7 +382,7 @@ distprep: catman-do depend-check
 	$(AUTORECONF)
 	-rm -rf autom4te.cache .depend.bak
 
-install: $(CONFIGFILES) $(MANPAGES) $(TARGETS) install-files install-sysconf host-key check-config
+install: $(CONFIGFILES) $(MANPAGES) $(TARGETS) install-files install-sysconf host-key
 install-nokeys: $(CONFIGFILES) $(MANPAGES) $(TARGETS) install-files install-sysconf
 install-nosysconf: $(CONFIGFILES) $(MANPAGES) $(TARGETS) install-files
 
@@ -397,18 +397,18 @@ install-files:
 	$(MKDIR_P) $(DESTDIR)$(mandir)/$(mansubdir)8
 	$(MKDIR_P) $(DESTDIR)$(libexecdir)
 	$(MKDIR_P) -m 0755 $(DESTDIR)$(PRIVSEP_PATH)
-	$(INSTALL) -m 0755 $(STRIP_OPT) ssh$(EXEEXT) $(DESTDIR)$(bindir)/ssh$(EXEEXT)
-	$(INSTALL) -m 0755 $(STRIP_OPT) scp$(EXEEXT) $(DESTDIR)$(bindir)/scp$(EXEEXT)
-	$(INSTALL) -m 0755 $(STRIP_OPT) ssh-add$(EXEEXT) $(DESTDIR)$(bindir)/ssh-add$(EXEEXT)
-	$(INSTALL) -m 0755 $(STRIP_OPT) ssh-agent$(EXEEXT) $(DESTDIR)$(bindir)/ssh-agent$(EXEEXT)
-	$(INSTALL) -m 0755 $(STRIP_OPT) ssh-keygen$(EXEEXT) $(DESTDIR)$(bindir)/ssh-keygen$(EXEEXT)
-	$(INSTALL) -m 0755 $(STRIP_OPT) ssh-keyscan$(EXEEXT) $(DESTDIR)$(bindir)/ssh-keyscan$(EXEEXT)
-	$(INSTALL) -m 0755 $(STRIP_OPT) sshd$(EXEEXT) $(DESTDIR)$(sbindir)/sshd$(EXEEXT)
-	$(INSTALL) -m 4711 $(STRIP_OPT) ssh-keysign$(EXEEXT) $(DESTDIR)$(SSH_KEYSIGN)$(EXEEXT)
-	$(INSTALL) -m 0755 $(STRIP_OPT) ssh-pkcs11-helper$(EXEEXT) $(DESTDIR)$(SSH_PKCS11_HELPER)$(EXEEXT)
-	$(INSTALL) -m 0755 $(STRIP_OPT) ssh-sk-helper$(EXEEXT) $(DESTDIR)$(SSH_SK_HELPER)$(EXEEXT)
-	$(INSTALL) -m 0755 $(STRIP_OPT) sftp$(EXEEXT) $(DESTDIR)$(bindir)/sftp$(EXEEXT)
-	$(INSTALL) -m 0755 $(STRIP_OPT) sftp-server$(EXEEXT) $(DESTDIR)$(SFTP_SERVER)$(EXEEXT)
+	$(INSTALL) -m 0755 ssh$(EXEEXT) $(DESTDIR)$(bindir)/ssh$(EXEEXT)
+	$(INSTALL) -m 0755 scp$(EXEEXT) $(DESTDIR)$(bindir)/scp$(EXEEXT)
+	$(INSTALL) -m 0755 ssh-add$(EXEEXT) $(DESTDIR)$(bindir)/ssh-add$(EXEEXT)
+	$(INSTALL) -m 0755 ssh-agent$(EXEEXT) $(DESTDIR)$(bindir)/ssh-agent$(EXEEXT)
+	$(INSTALL) -m 0755 ssh-keygen$(EXEEXT) $(DESTDIR)$(bindir)/ssh-keygen$(EXEEXT)
+	$(INSTALL) -m 0755 ssh-keyscan$(EXEEXT) $(DESTDIR)$(bindir)/ssh-keyscan$(EXEEXT)
+	$(INSTALL) -m 0755 sshd$(EXEEXT) $(DESTDIR)$(sbindir)/sshd$(EXEEXT)
+	$(INSTALL) -m 4711 ssh-keysign$(EXEEXT) $(DESTDIR)$(SSH_KEYSIGN)$(EXEEXT)
+	$(INSTALL) -m 0755 ssh-pkcs11-helper$(EXEEXT) $(DESTDIR)$(SSH_PKCS11_HELPER)$(EXEEXT)
+	$(INSTALL) -m 0755 ssh-sk-helper$(EXEEXT) $(DESTDIR)$(SSH_SK_HELPER)$(EXEEXT)
+	$(INSTALL) -m 0755 sftp$(EXEEXT) $(DESTDIR)$(bindir)/sftp$(EXEEXT)
+	$(INSTALL) -m 0755 sftp-server$(EXEEXT) $(DESTDIR)$(SFTP_SERVER)$(EXEEXT)
 	$(INSTALL) -m 644 ssh.1.out $(DESTDIR)$(mandir)/$(mansubdir)1/ssh.1
 	$(INSTALL) -m 644 scp.1.out $(DESTDIR)$(mandir)/$(mansubdir)1/scp.1
 	$(INSTALL) -m 644 ssh-add.1.out $(DESTDIR)$(mandir)/$(mansubdir)1/ssh-add.1
