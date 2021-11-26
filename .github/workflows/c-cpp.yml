@@ -17,7 +17,6 @@ jobs:
     - name: install deps
       run: |
         sudo apt install gcc make gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu autoconf -y
-        sudo apt install zlib1g zlib1g-dev lib32z1 lib32z1-dev git -y
         
     
     - name: install zlib-arm & openssl-arm
@@ -74,7 +73,7 @@ jobs:
         echo "=============================="
         echo "running configure"
         echo "=============================="
-        ./Configure linux-aarch64 shared zlib-dynamic --prefix=/usr
+        ./Configure linux-aarch64 shared zlib-dynamic --prefix=/usr --build x86_64-pc-linux-gnu --host aarch64-linux-gnu
         
         echo "=============================="
         echo "running make
