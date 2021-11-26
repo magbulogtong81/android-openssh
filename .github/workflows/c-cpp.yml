@@ -14,19 +14,30 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
+    - name: install deps
+      run: |
+        sudo apt install gcc make gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu autoconf \
+        zlib1g zlib1g-dev lib32z1 lib32z1-dev lib64z1 lib64z1-dev -y
+        
     - name: configure
       run: |
-        sudo apt install gcc make gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu autoconf -y
-        autoreconf
-        ./configure --build x86_64-pc-linux-gnu --host aarch64-linux-gnu CFLAGS="-static" --enable-mpers=check --prefix=`pwd`/build
+            autoreconf
+            ./configure --build x86_64-pc-linux-gnu --host aarch64-linux-gnu CFLAGS="-static" --enable-mpers=check --prefix=`pwd`/build
+
       
       
     - name: make
       run: make LDFLAGS="-all-static"
+      
     - name: make check
       run: make check
+      
     - name: make distcheck
       run: make distcheck
+      
+    - name: install
+      run: sudo make install
+      
     - name: upload artifact
       uses: actions/upload-artifact@v2
       with:
