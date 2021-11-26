@@ -75,10 +75,14 @@ jobs:
         ./Configure linux-aarch64 shared zlib-dynamic --prefix=$PATH_HOME/openssl-arm
         
         echo "=============================="
-        echo "running make & make install"
+        echo "running make
         echo "=============================="
         make CC="${cross}gcc" AR="${cross}ar r" RANLIB="${cross}ranlib"
-        make install
+        
+        echo "=============================="
+        echo "running make install
+        echo "=============================="
+        make CC="${cross}gcc" AR="${cross}ar r" RANLIB="${cross}ranlib" install
         
     - name: configure openssh
       run: |
