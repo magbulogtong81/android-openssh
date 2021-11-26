@@ -17,12 +17,40 @@ jobs:
     - name: install deps
       run: |
         sudo apt install gcc make gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu autoconf -y
-        sudo apt install zlib1g zlib1g-dev lib32z1 lib32z1-dev -y
+        sudo apt install zlib1g zlib1g-dev lib32z1 lib32z1-dev git -y
         
-    - name: configure
+    
+    - name: install zlib-arm & openssl-arm
       run: |
+        export PATH_HOME=`pwd`
+        wget https://zlib.net/zlib-1.2.11.tar.gz
+        mkdir zlib-source -p
+        mkdir zlib-arm -p
+        tar -xvf zlib-1.2.11.tar.gz -C zlib-source
+        cd zlib-source
+        CC=aarch64-linux-gnu-gcc
+        ./configure --prefix=../zlib-arm
+        make
+        make install
+        
+        cd $PATH_HOME
+        mkdir openssl-arm
+        git clone git clone https://github.com/openssl/openssl.git
+        cd openssl-arm
+        export cross=aarch64-linux-gnu-
+        ./Configure dist --prefix=$PATH_HOME/openssl-arm
+        make CC="${cross}gcc" AR="${cross}ar r" RANLIB="${cross}ranlib"
+        make install
+        
+    - name: configure openssh
+      run: |
+            cd $PATH_HOME
+            mkdir build -p
             autoreconf
-            ./configure --build x86_64-pc-linux-gnu --host aarch64-linux-gnu CFLAGS="-static" --enable-mpers=check --prefix=`pwd`/build
+            ./configure --build x86_64-pc-linux-gnu --host aarch64-linux-gnu CFLAGS="-static" \
+            --enable-mpers=check --prefix=`pwd`/build --with-libs --with-zlib=$PATH_HOME/zlib-arm \
+            --with-ssl-dir=$PATH_HOME/openssl-arm --disable-etc-default-login CC=aarch64-linux-gnu-gcc \
+            AR=aarch64-linux-gnu-ar
 
       
       
