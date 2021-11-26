@@ -23,20 +23,29 @@ jobs:
     - name: install zlib-arm & openssl-arm
       run: |
         export PATH_HOME=`pwd`
+        echo "work directory is: $PATH_HOME"
+        echo "downloading zlib..."
         wget https://zlib.net/zlib-1.2.11.tar.gz
+        echo "creating directories..."
         mkdir zlib-source -p
         mkdir zlib-arm -p
+        echo "extracting zlib"
         tar -xvf zlib-1.2.11.tar.gz -C zlib-source
-        cd zlib-source
+        echo "going to directory $PATH_HOME/zlib-source/zlib-1.2.11"
+        cd zlib-source/zlib-1.2.11
         CC=aarch64-linux-gnu-gcc
-        ./configure --prefix=../zlib-arm
+        echo "running configure"
+        ./configure --prefix=$PATH_HOME/zlib-arm
+        echo "running make & make install"
         make
         make install
         
+        echo "going back to work dir"
         cd $PATH_HOME
         mkdir openssl-arm
+        echo "downloading openssl"
         git clone git clone https://github.com/openssl/openssl.git
-        cd openssl-arm
+        cd openssl
         export cross=aarch64-linux-gnu-
         ./Configure dist --prefix=$PATH_HOME/openssl-arm
         make CC="${cross}gcc" AR="${cross}ar r" RANLIB="${cross}ranlib"
