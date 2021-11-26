@@ -72,7 +72,7 @@ jobs:
         echo "=============================="
         echo "running configure"
         echo "=============================="
-        ./Configure dist linux-aarch64 shared zlib-dynamic --prefix=$PATH_HOME/openssl-arm
+        ./Configure linux-aarch64 shared zlib-dynamic --prefix=$PATH_HOME/openssl-arm
         
         echo "=============================="
         echo "running make & make install"
